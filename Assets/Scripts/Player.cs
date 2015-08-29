@@ -72,7 +72,7 @@ public class Player : MonoBehaviour {
 			}
 
 			boost = false;
-			if(Input.GetKey("space")){
+			if(Input.GetKey(KeyCode.Space)){
 				if(energy > 0){
 					boost = true;
 					energy --;
@@ -102,7 +102,7 @@ public class Player : MonoBehaviour {
 	public void EnergyCharge(float charge){
 
 		energy += charge;
-		//Debug.Log(energy.ToString());
+		Debug.Log(energy.ToString());
 	}
 
 	//---------------------------------------------------------------------
@@ -110,7 +110,7 @@ public class Player : MonoBehaviour {
 	//---------------------------------------------------------------------
 	public void OnCollisionEnter(Collision other){
 		if(other.gameObject.tag == "obstacle"){
-			Debug.Log("Hit obstacle");
+			//Debug.Log("Hit obstacle");
 			rigidBody.velocity = new Vector3(rigidBody.velocity.x - 10,rigidBody.velocity.y,-20f * rigidBody.velocity.z );
 		}
 	}

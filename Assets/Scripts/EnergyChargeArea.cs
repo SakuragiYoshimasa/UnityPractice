@@ -5,10 +5,12 @@ public class EnergyChargeArea : MonoBehaviour {
 
 	public Player player;
 	private const float chargeRate = 1.0f;
+	
 
-	private void OnTriggerStay(Collider other){
-
+	void OnTriggerStay(Collider other){
+		Debug.Log("charge");
 		if(other.gameObject.tag == "obstacle"){
+			Debug.Log("charge");
 			player.EnergyCharge(chargeRate);
 		}
 	}
