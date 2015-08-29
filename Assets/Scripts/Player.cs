@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
+	public GameManager manager;
+	private bool gameStarted = false;
+
 	/*[SerializeField]
 	private Vector3 position;*/
 	[SerializeField]
@@ -18,6 +21,7 @@ public class Player : MonoBehaviour {
 	private float energy;
 	private bool boost;
 	private TurnModes mode;
+	public float score;
 
 	private const float accelarate = 5.0f;
 	private const float boostAccelarate = 30.0f;
@@ -29,8 +33,10 @@ public class Player : MonoBehaviour {
 	private const float maxX = 200.0f;
 	private const float boostMaxX = 1000.0f;
 	private const float maxZ = 20.0f;
-	
 
+	public void GameStart(){
+		gameStarted = true;
+	}
 
 	void Start () {
 
@@ -46,9 +52,7 @@ public class Player : MonoBehaviour {
 		energy = 0f;
 		boost = false;
 		mode = TurnModes.None;
-
-
-	
+		score = 0f;
 	}
 
 
@@ -57,21 +61,25 @@ public class Player : MonoBehaviour {
 	//---------------------------------------------------------------------
 	private void Update () {
 
-		mode = TurnModes.None;
-		if(Input.GetKey("left")){
-			mode = TurnModes.Left;
-		}
-		if(Input.GetKey("right")){
-			mode = TurnModes.Right;
-		}
+		if(gameStarted){
 
-		boost = false;
-		if(Input.GetKey("space")){
-			if(energy > 0){
-				boost = true;
-				energy --;
+			mode = TurnModes.None;
+			if(Input.GetKey("left")){
+				mode = TurnModes.Left;
+			}
+			if(Input.GetKey("right")){
+				mode = TurnModes.Right;
+			}
+
+			boost = false;
+			if(Input.GetKey("space")){
+				if(energy > 0){
+					boost = true;
+					energy --;
+				}
 			}
 		}
+		score = transform.position.x;
 	}
 
 
@@ -79,11 +87,11 @@ public class Player : MonoBehaviour {
 	//Update Physics and calulate
 	//---------------------------------------------------------------------
 	private void FixedUpdate(){
-
-		AdjustVelocity();
-
-		if(transform.position.y < 0){
-			transform.position = new Vector3(transform.position.x,0f,transform.position.z);
+		if(gameStarted){
+			AdjustVelocity();
+			if(transform.position.y < 0){
+				transform.position = new Vector3(transform.position.x,0f,transform.position.z);
+			}
 		}
 	}
 
