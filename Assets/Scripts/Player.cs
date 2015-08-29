@@ -4,7 +4,7 @@ using System.Collections;
 public class Player : MonoBehaviour {
 
 	public GameManager manager;
-	private bool gameStarted = false;
+	public bool gameStarted = false;
 
 	/*[SerializeField]
 	private Vector3 position;*/
@@ -34,6 +34,10 @@ public class Player : MonoBehaviour {
 	private const float boostMaxX = 1000.0f;
 	private const float maxZ = 20.0f;
 
+	public GameObject leftLight;
+	public GameObject rightLight;
+	public GameObject explosion;
+
 	public void GameStart(){
 		gameStarted = true;
 	}
@@ -53,6 +57,10 @@ public class Player : MonoBehaviour {
 		boost = false;
 		mode = TurnModes.None;
 		score = 0f;
+
+		leftLight.SetActive(false);
+		rightLight.SetActive(false);
+		explosion.SetActive(false);
 	}
 
 
@@ -100,9 +108,10 @@ public class Player : MonoBehaviour {
 	//EnergyCharge For BoostMode
 	//---------------------------------------------------------------------
 	public void EnergyCharge(float charge){
-
-		energy += charge;
-		Debug.Log(energy.ToString());
+		if(gameStarted){
+			energy += charge;
+			//Debug.Log(energy.ToString());
+		}
 	}
 
 	//---------------------------------------------------------------------
@@ -112,6 +121,13 @@ public class Player : MonoBehaviour {
 		if(other.gameObject.tag == "obstacle"){
 			//Debug.Log("Hit obstacle");
 			rigidBody.velocity = new Vector3(rigidBody.velocity.x - 10,rigidBody.velocity.y,-20f * rigidBody.velocity.z );
+			explosion.SetActive(true);
+		}
+	}
+
+	void OnCollisionExit(Collision other){
+		if(other.gameObject.tag == "obstacle"){
+			//explosion.SetActive(false);
 		}
 	}
 

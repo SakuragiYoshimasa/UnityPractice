@@ -8,10 +8,23 @@ public class EnergyChargeArea : MonoBehaviour {
 	
 
 	void OnTriggerStay(Collider other){
-		Debug.Log("charge");
-		if(other.gameObject.tag == "obstacle"){
+		if(player.gameStarted){
 			Debug.Log("charge");
-			player.EnergyCharge(chargeRate);
+			if(other.gameObject.tag == "obstacle"){
+				Debug.Log("charge");
+				player.EnergyCharge(chargeRate);
+
+				if(other.gameObject.transform.position.z > player.gameObject.transform.position.z){
+					player.leftLight.SetActive(true);
+				}else{
+					player.rightLight.SetActive(true);
+				}
+			}
 		}
+	}
+
+	void OnTriggerExit(Collider other){
+		player.leftLight.SetActive(false);
+		player.rightLight.SetActive(false);
 	}
 }
