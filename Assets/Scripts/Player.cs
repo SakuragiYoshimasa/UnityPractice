@@ -18,7 +18,7 @@ public class Player : MonoBehaviour {
 	private Transform transform;
 
 	[SerializeField]
-	private float energy;
+	public float energy;
 	private bool boost;
 	private TurnModes mode;
 	public float score;
@@ -29,7 +29,7 @@ public class Player : MonoBehaviour {
 	private const float HorizontalFrictionEffect = 0.85f;
 	private const float turnSpeed = 1.0f;
 	private const float gravity = 3.0f;
-
+	public const float maxEnergy = 300.0f;
 	private const float maxX = 200.0f;
 	private const float boostMaxX = 1000.0f;
 	private const float maxZ = 20.0f;
@@ -109,7 +109,9 @@ public class Player : MonoBehaviour {
 	//---------------------------------------------------------------------
 	public void EnergyCharge(float charge){
 		if(gameStarted){
-			energy += charge;
+			if(energy < maxEnergy){
+				energy += charge;
+			}
 			//Debug.Log(energy.ToString());
 		}
 	}
@@ -117,18 +119,24 @@ public class Player : MonoBehaviour {
 	//---------------------------------------------------------------------
 	//When collide with obstacle, decrease velocity and AddForce with hilizontal power opposite to vector which player to obstacle 
 	//---------------------------------------------------------------------
+	//private bool stopExp = false;
 	public void OnCollisionEnter(Collision other){
 		if(other.gameObject.tag == "obstacle"){
 			//Debug.Log("Hit obstacle");
 			rigidBody.velocity = new Vector3(rigidBody.velocity.x - 10,rigidBody.velocity.y,-20f * rigidBody.velocity.z );
 			explosion.SetActive(true);
+			//stopExp = false;
 		}
 	}
 
 	void OnCollisionExit(Collision other){
 		if(other.gameObject.tag == "obstacle"){
-			//explosion.SetActive(false);
+			Invoke("InactiveExplosion",6.0f);
 		}
+	}
+
+	private void InactiveExplosion(){
+		explosion.SetActive(false);
 	}
 
 	//---------------------------------------------------------------------
