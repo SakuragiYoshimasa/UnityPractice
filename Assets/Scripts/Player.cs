@@ -4,7 +4,7 @@ using System.Collections;
 public class Player : MonoBehaviour {
 
 	public GameManager manager;
-	private bool gameStarted = false;
+	public bool gameStarted = false;
 
 	/*[SerializeField]
 	private Vector3 position;*/
@@ -18,7 +18,7 @@ public class Player : MonoBehaviour {
 	private Transform transform;
 
 	[SerializeField]
-	private float energy;
+	public float energy;
 	private bool boost;
 	private TurnModes mode;
 	public float score;
@@ -29,10 +29,14 @@ public class Player : MonoBehaviour {
 	private const float HorizontalFrictionEffect = 0.85f;
 	private const float turnSpeed = 1.0f;
 	private const float gravity = 3.0f;
-
+	public const float maxEnergy = 300.0f;
 	private const float maxX = 200.0f;
 	private const float boostMaxX = 1000.0f;
 	private const float maxZ = 20.0f;
+
+	public GameObject leftLight;
+	public GameObject rightLight;
+	public GameObject explosion;
 
 	public void GameStart(){
 		gameStarted = true;
@@ -53,6 +57,10 @@ public class Player : MonoBehaviour {
 		boost = false;
 		mode = TurnModes.None;
 		score = 0f;
+
+		leftLight.SetActive(false);
+		rightLight.SetActive(false);
+		explosion.SetActive(false);
 	}
 
 
@@ -72,7 +80,7 @@ public class Player : MonoBehaviour {
 			}
 
 			boost = false;
-			if(Input.GetKey("space")){
+			if(Input.GetKey(KeyCode.Space)){
 				if(energy > 0){
 					boost = true;
 					energy --;
@@ -100,19 +108,35 @@ public class Player : MonoBehaviour {
 	//EnergyCharge For BoostMode
 	//---------------------------------------------------------------------
 	public void EnergyCharge(float charge){
-
-		energy += charge;
-		//Debug.Log(energy.ToString());
+		if(gameStarted){
+			if(energy < maxEnergy){
+				energy += charge;
+			}
+			//Debug.Log(energy.ToString());
+		}
 	}
 
 	//---------------------------------------------------------------------
 	//When collide with obstacle, decrease velocity and AddForce with hilizontal power opposite to vector which player to obstacle 
 	//---------------------------------------------------------------------
+	//private bool stopExp = false;
 	public void OnCollisionEnter(Collision other){
 		if(other.gameObject.tag == "obstacle"){
-			Debug.Log("Hit obstacle");
+			//Debug.Log("Hit obstacle");
 			rigidBody.velocity = new Vector3(rigidBody.velocity.x - 10,rigidBody.velocity.y,-20f * rigidBody.velocity.z );
+			explosion.SetActive(true);
+			//stopExp = false;
 		}
+	}
+
+	void OnCollisionExit(Collision other){
+		if(other.gameObject.tag == "obstacle"){
+			Invoke("InactiveExplosion",6.0f);
+		}
+	}
+
+	private void InactiveExplosion(){
+		explosion.SetActive(false);
 	}
 
 	//---------------------------------------------------------------------
